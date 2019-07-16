@@ -41,7 +41,6 @@ public class EmployeeLifecycleListener {
 	@PostLoad
 	public void afterSelect(Employee e) {
 		System.out.println("After Select: "+e);
-	}
-	
+	}	
 
 }

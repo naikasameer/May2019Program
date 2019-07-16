@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import com.mastek.training.hrapp.entities.Project;
 
 @Component
-public interface ProjectRepository extends CrudRepository<Project, Integer>{
+public interface ProjectRepository 
+	extends CrudRepository<Project, Integer>{
 
 }

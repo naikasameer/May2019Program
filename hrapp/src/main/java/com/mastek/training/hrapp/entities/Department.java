@@ -1,11 +1,16 @@
 package com.mastek.training.hrapp.entities;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -15,7 +20,31 @@ public class Department implements Serializable{
 	private int deptno;
 	private String name;
 	private String location;
+	// OneTOMany: One Department has many Employees
+	private Set<Employee> members = new HashSet<>();
 	
+	//@OneToMany: used on the get method of set to configure association
+	// fetch=LAZY: delay the initialization 
+	//			until method getMembers() is called using 
+	//			additional select query [default value]
+	//		 EAGER: Initialize the collection on entity find 
+	//				Post load event
+	// cascade=All the Entity operation done on Department
+	//		 would be performed on each associated employee object
+	//		ALL: [Persist,Merge,Delete,Refresh]
+	//  mappedBy: identifies the propertyname in Child class
+	//			where the JoinColumn configuration is present
+	//			JoinColumn::ForeignKey
+	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL,
+			mappedBy="currentDepartment")
+	public Set<Employee> getMembers() {
+		return members;
+	}
+
+	public void setMembers(Set<Employee> members) {
+		this.members = members;
+	}
+
 	public Department() {
 		// TODO Auto-generated constructor stub
 	}
