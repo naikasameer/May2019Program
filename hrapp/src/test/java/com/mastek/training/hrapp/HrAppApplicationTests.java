@@ -1,6 +1,5 @@
 package com.mastek.training.hrapp;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -13,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.mastek.training.hrapp.apis.DepartmentService;
 import com.mastek.training.hrapp.apis.EmployeeService;
+import com.mastek.training.hrapp.apis.ProjectService;
 import com.mastek.training.hrapp.entities.Employee;
 
 // Initialize the JUnit TEst with Spring Boot Application Environment
@@ -31,6 +32,11 @@ public class HrAppApplicationTests {
 	EmployeeService empService;
 
 	@Autowired
+	DepartmentService deptService;
+	
+	@Autowired
+	ProjectService projectService;
+	@Autowired
 	Employee emp;
 	
 	@Test
@@ -39,6 +45,8 @@ public class HrAppApplicationTests {
 		emp.setName("New Emp 5");
 		emp.setSalary(92);
 		emp = empService.registerOrUpdateEmployee(emp);
+		projectService.findByProjectId(1);
+		deptService.findByDeptno(3);
 		assertNotNull(emp);
 	}
 
