@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="JPA_Department")
@@ -37,6 +38,7 @@ public class Department implements Serializable{
 	//			JoinColumn::ForeignKey
 	@OneToMany(fetch=FetchType.LAZY,cascade=CascadeType.ALL,
 			mappedBy="currentDepartment")
+	@XmlTransient
 	public Set<Employee> getMembers() {
 		return members;
 	}

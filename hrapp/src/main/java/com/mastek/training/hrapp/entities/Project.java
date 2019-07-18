@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlTransient;
 
 @Entity
 @Table(name="JPA_Project")
@@ -23,6 +24,7 @@ public class Project {
 	//mappedBy: check the configuration for Many to Many association
 	// In Employee class getAssignments() method
 	@ManyToMany(mappedBy="assignments")
+	@XmlTransient
 	public Set<Employee> getTeam() {
 		return team;
 	}
