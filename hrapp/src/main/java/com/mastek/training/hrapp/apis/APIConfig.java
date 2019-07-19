@@ -9,6 +9,8 @@ public class APIConfig extends ResourceConfig{
 
 	public APIConfig() {
 		//register each Service class in ResourceConfig
-		register(EmployeeService.class,DepartmentService.class);
+		register(EmployeeService.class);
+		register(DepartmentService.class);
+		register(ProjectService.class);
 	}
 }

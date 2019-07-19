@@ -1,10 +1,12 @@
 package com.mastek.training.hrapp;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,12 +41,13 @@ public class HrAppApplicationTests {
 	@Autowired
 	ProjectService projectService;
 
-	@Autowired
-	Employee emp;
+	//@Autowired
+	//Employee emp;
 	
 	@Test
 	public void addEmployeeUsingService() {
-		emp.setEmpno(5); 
+		Employee emp = new Employee();
+		//emp.setEmpno(5); comment this for adding the entity
 		emp.setName("New Emp 5");
 		emp.setSalary(92);
 		emp = empService.registerOrUpdateEmployee(emp);
@@ -76,6 +79,26 @@ public class HrAppApplicationTests {
 		
 		assertEquals(emps.size(),2);
 	}
+	
+	
+	@Test
+	public void assignDepartmentToEmployee() {
+		int empno  = 32;
+		int deptno = 17;
+		Employee emp  = empService.assignDepartment(empno,deptno);
+		assertNotNull(emp.getCurrentDepartment());
+	}
+		
+	@Test
+	public void assignProjectToEmployee() {
+		int empno =1;
+		int projectId =9;	
+		Set<Project> projects= empService.assignProject(empno,projectId);
+		assertNotNull(projects);
+		System.out.println(projects);
+	}
+	
+	
 	
 	@Test
 	public void manageAssociations() {

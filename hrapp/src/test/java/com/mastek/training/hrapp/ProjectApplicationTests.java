@@ -16,8 +16,8 @@ public class ProjectApplicationTests {
 	@Autowired
 	EmployeeService empService;
 	
-	@Autowired
-	Employee emp;
+	//@Autowired
+	//Employee emp;
 	
 	@Test
 	public void exampleProjectTest() {

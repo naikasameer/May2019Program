@@ -1,11 +1,14 @@
 package com.mastek.training.hrapp.apis;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -38,10 +41,10 @@ public class EmployeeService {
 	private EmployeeRepository employeeRepository;
 	
 	@Autowired
-	private DepartmentRepository departmentRepository;
+	private DepartmentService departmentService;
 	
 	@Autowired
-	private ProjectRepository projectRepository;
+	private ProjectService projectService;
 	
 	
 	public EmployeeService() {
@@ -94,36 +97,60 @@ public class EmployeeService {
 		employeeRepository.deleteById(empno);
 	}
 	
-	@GET
+	// SPring ensures that database session is open until
+	// all the operations in this method across repositories 
+	// are completed
+	// It is used to fetch all collections which are
+	// initialized using Lazy Initialization
+	@Transactional
+	@POST
 	@Path("/assign/department")
-	@Transactional
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Employee assignDepartment(
-			@QueryParam("empno")int empno,
-			@QueryParam("deptno")int deptno) {
-		Employee emp = employeeRepository.findById(empno).get();
-		Department dept = departmentRepository.findById(deptno).get();
-		dept.getMembers().add(emp);
-		emp.setCurrentDepartment(dept);
-		departmentRepository.save(dept);
-		employeeRepository.save(emp);
-		return emp;
+				@FormParam("empno") int empno, 
+				@FormParam("deptno") int deptno) {
+		try {
+			// fetch the entities to be associated
+			Employee emp = findByEmpno(empno);
+			Department dept = departmentService
+								.findByDeptno(deptno);
+			//manage the association
+			
+			dept.getMembers().add(emp);// One assigned with many
+			emp.setCurrentDepartment(dept);// many assigned with one
+
+			// update the entity to save the association
+			emp = registerOrUpdateEmployee(emp);
+			return emp;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-	
-	@GET
-	@Path("/assign/project")
+
 	@Transactional
-	public Employee assignProject(
-			@QueryParam("empno")int empno,
-			@QueryParam("projectId")int projectId) {
-		
-		Employee emp = employeeRepository.findById(empno).get();
-		Project project= projectRepository.findById(projectId).get();
-		emp.getAssignments().add(project);		
-		
-		employeeRepository.save(emp);
-		return emp;
+	@POST
+	@Path("/assign/project")
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Set<Project> assignProject(
+				@FormParam("empno") int empno, 
+				@FormParam("projectId") int projectId) {
+		try {
+			Employee emp = findByEmpno(empno);
+			Project prj = projectService.findByProjectId(projectId);
+			// associate Employee with Project  
+			emp.getAssignments().add(prj);
+			// update the association in db, in join table 
+			emp = registerOrUpdateEmployee(emp);
+			
+			return emp.getAssignments();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
-	
 	
 }
 
